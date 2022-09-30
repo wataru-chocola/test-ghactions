@@ -8,6 +8,8 @@ on:
       - "synchronize"
       - "reopened"
       - "closed"
+  push:
+    branches: [ "main" ]
 
 jobs:
   detect-changed-images:
@@ -27,6 +29,8 @@ jobs:
           echo "MERGED: ${{ github.event.pull_request.merged }}"
           echo "BASE BRANCH: ${GITHUB_BASE_REF}"
           echo "HEAD BRANCH: ${GITHUB_HEAD_REF}"
+          echo "BEFORE COMMIT: ${{ github.event.before }}"
+          echo "AFTER COMMIT: ${{ github.event.after }}"
 
           echo "diff 1"
           #git diff origin/main..."${GITHUB_SHA}" --relative="aaa" --name-only
