@@ -1,0 +1,36 @@
+name: Docker Publish on Repository Events
+
+on:
+  pull_request:
+    branches: [ "main" ]
+    types:
+      - "opened"
+      - "synchronize"
+      - "reopened"
+      - "closed"
+
+jobs:
+  detect-changed-images:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.head_ref }}
+      - name: Detect changed images
+        id: detect_images
+        shell: bash
+        run: |
+          echo "SHA: ${GITHUB_SHA}"
+          echo "ACTOIN: ${{ github.event.action }}"
+          echo "MERGED: ${{ github.event.pull_request.merged }}"
+          echo "BASE BRANCH: ${GITHUB_BASE_REF}"
+          echo "HEAD BRANCH: ${GITHUB_HEAD_REF}"
+
+          echo "diff 1"
+          #git diff origin/main..."${GITHUB_SHA}" --relative="aaa" --name-only
+          echo "diff 2"
+          git diff "origin/${GITHUB_BASE_REF}"..."${GITHUB_HEAD_REF}" --name-only
+          echo "diff 3"
+          git diff "origin/${GITHUB_BASE_REF}"..."${GITHUB_HEAD_REF}" --relative="aaa" --name-only
