@@ -15,10 +15,17 @@ jobs:
   detect-changed-images:
     runs-on: ubuntu-latest
     steps:
+      - name: Set fetch depth
+        id: set_fetch_depth
+        run: |
+          numCommits=$(echo "${{ toJson(github.event.commits) }}" | jq '. | length')
+          depth=$(("$numCommits"+1))
+          echo "$depth"
+          echo "::set-output name=fetch_depth::${depth}"
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 2
+          fetch-depth: ${{ steps.set_fetch_depth.outputs.fetch_depth }}
       - name: Detect changed images
         id: detect_images
         shell: bash
